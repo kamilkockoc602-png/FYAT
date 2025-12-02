@@ -1,0 +1,42 @@
+[
+  {
+    "company": "Can Hatay",
+    "route": "Hatay - İstanbul (2025-07-06 08:00)",
+    "price": "1200 ₺"
+  },
+  {
+    "company": "Siirt Petrol",
+    "route": "Siirt - Ankara (2025-07-06 14:15)",
+    "price": "1100 ₺"
+  },
+  {
+    "company": "Özlem Diyarbakır",
+    "route": "Kilis - Gaziantep (2025-07-06 16:30)",
+    "price": "550 ₺"
+  },
+  {
+    "company": "Hatay Jet",
+    "route": "Hatay - Ankara (2025-07-06 18:45)",
+    "price": "980 ₺"
+  },
+  {
+    "company": "Has Siirt",
+    "route": "Siirt - İzmir (2025-07-06 09:00)",
+    "price": "1450 ₺"
+  },
+  {
+    "company": "Lider Siirt",
+    "route": "Siirt - İstanbul (2025-07-06 11:15)",
+    "price": "1600 ₺"
+  },
+  {
+    "company": "Yeni Kilis",
+    "route": "Kilis - Adana (2025-07-06 07:30)",
+    "price": "700 ₺"
+  },
+  {
+    "company": "Kilis Ekspres",
+    "route": "Kilis - Konya (2025-07-06 12:00)",
+    "price": "890 ₺"
+  }
+]

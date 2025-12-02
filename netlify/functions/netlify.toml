@@ -1,0 +1,10 @@
+[build]
+  publish   = "."
+  functions = "netlify/functions"
+
+[[redirects]]
+  from    = "/upload_excel"
+  to      = "/.netlify/functions/upload_excel"
+  status  = 200
+  methods = ["POST"]
+

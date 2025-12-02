@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Fiyat Tarifesi Çalışması</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f8; }
+    h2 { color: #2e86de; }
+    .filters, .stats { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+    .filters button { padding: 10px 15px; background: #fff; border: 1px solid #2e86de; border-radius: 6px; color: #2e86de; cursor: pointer; }
+    .filters button.active { background: #2e86de; color: #fff; }
+    input[type="text"] { padding: 10px; width: 300px; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 20px; }
+    .stats div { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); min-width: 150px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; }
+    th, td { padding: 10px; border: 1px solid #ddd; text-align: center; }
+    th { background-color: #2e86de; color: white; }
+    #loadMore { display: block; margin: 20px auto; padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>Fiyat Tarifesi Çalışması</h2>
+  <input type="text" id="searchInput" placeholder="Durak veya kalkış-varış ara">
+  <div class="filters">
+    <button class="active" onclick="filterCity('', event)">Hepsi</button>
+    <button onclick="filterCity('istanbul', event)">İstanbul</button>
+    <button onclick="filterCity('ankara', event)">Ankara</button>
+    <button onclick="filterCity('bursa', event)">Bursa</button>
+    <button onclick="filterCity('izmir', event)">İzmir</button>
+    <button onclick="filterCity('antalya', event)">Antalya</button>
+    <button onclick="filterCity('samsun', event)">Samsun</button>
+    <button onclick="filterCity('adana', event)">Adana</button>
+    <button onclick="filterCity('afyon', event)">Afyon</button>
+    <button onclick="filterCity('eskişehir', event)">Eskişehir</button>
+  </div>
+  <div class="stats">
+    <div>Bakanlık Fiyat Sayısı: <span id="bakanlikCount"></span></div>
+    <div>Talep Edilen Fiyat Sayısı: <span id="talepCount"></span></div>
+    <div>Toplam Mix: <span id="toplamMix"></span> %</div>
+    <div>Ort. Zam: <span id="ortZam"></span> %</div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Kalkış</th><th>Kalkış Merkezi</th><th>Varış</th><th>Varış Merkezi</th>
+        <th>Mix %</th><th>Uygulanan</th><th>Geçerli Tarife</th><th>Geçerli F/KM</th>
+        <th>Talep Edilen</th><th>Talep F/KM</th><th>Zam Oranı %</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+  <button id="loadMore">+50</button>
+
+  <script>
+    let data = [];
+    let currentCity = "";
+    let filteredData = [];
+    let displayIndex = 0;
+    const limit = 50;
+
+    fetch("fiyat_tarife_data.json")
+      .then(res => res.json())
+      .then(json => {
+        data = json;
+        filteredData = [...data];
+        renderStats();
+        renderNext();
+      });
+
+    function renderStats() {
+      document.getElementById("bakanlikCount").textContent = data.length;
+      const talepCount = data.filter(r => r.TalepFiyat).length;
+      document.getElementById("talepCount").textContent = talepCount;
+      const mixAvg = (data.reduce((a,b) => a + parseFloat(b.Mix || 0), 0) / data.length).toFixed(2);
+      document.getElementById("toplamMix").textContent = mixAvg;
+      const zamList = data.map(r => parseFloat(r.ZamOrani)).filter(n => !isNaN(n));
+      const minZam = Math.min(...zamList).toFixed(2);
+      const maxZam = Math.max(...zamList).toFixed(2);
+      document.getElementById("ortZam").textContent = `${minZam} - ${maxZam}`;
+    }
+
+    function renderNext() {
+      const body = document.getElementById("tableBody");
+      const chunk = filteredData.slice(displayIndex, displayIndex + limit);
+      chunk.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.Kalkis}</td>
+          <td>${row.KalkisMerkezi}</td>
+          <td>${row.Varis}</td>
+          <td>${row.VarisMerkezi}</td>
+          <td>${row.Mix}</td>
+          <td>${row.UygulamaFiyat}</td>
+          <td>${row.TarifeFiyat}</td>
+          <td>${row.TarifeKM}</td>
+          <td>${row.TalepFiyat || '-'}</td>
+          <td>${row.TalepKM || '-'}</td>
+          <td>${row.ZamOrani || '-'}</td>
+        `;
+        body.appendChild(tr);
+      });
+      displayIndex += limit;
+      document.getElementById("loadMore").style.display =
+        displayIndex >= filteredData.length ? "none" : "block";
+    }
+
+    function filterCity(city, event) {
+      currentCity = city;
+      document.querySelectorAll('.filters button').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const keyword = document.getElementById("searchInput").value.toLowerCase();
+      const parts = keyword.split("-").map(p => p.trim());
+
+      filteredData = data.filter(item => {
+        const kalkis = item.Kalkis.toLowerCase();
+        const varis = item.Varis.toLowerCase();
+        const matchesCity = currentCity ? kalkis.includes(currentCity) : true;
+
+        if (parts.length === 2) {
+          return matchesCity && kalkis.includes(parts[0]) && varis.includes(parts[1]);
+        } else {
+          return matchesCity && (kalkis.includes(keyword) || varis.includes(keyword));
+        }
+      });
+
+      displayIndex = 0;
+      document.getElementById("tableBody").innerHTML = "";
+      renderNext();
+    }
+
+    document.getElementById("searchInput").addEventListener("input", applyFilters);
+    document.getElementById("loadMore").addEventListener("click", renderNext);
+  </script>
+</body>
+</html>

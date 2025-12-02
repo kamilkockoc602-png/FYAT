@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Excel ile Fiyat Yükle</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Excel ile Fiyat Yükle</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+      <input type="date" name="baslangic" placeholder="Başlangıç Tarihi">
+      <input type="date" name="bitis" placeholder="Bitiş Tarihi">
+      <input type="file" name="excel" accept=".xlsx" required>
+      <button type="submit">Yükle ve Listele</button>
+    </form>
+
+    <table id="pricesTable">
+      <thead>
+        <tr><th>#</th><th>Kalkış</th><th>Varış</th><th>Fiyat</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <script src="/static/js/fiyat_upload.js"></script>
+</body>
+</html>

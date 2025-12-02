@@ -1,0 +1,644 @@
+[
+  {
+    "Güzergah": "DÜZİÇİ",
+    "TARİFE & ADANA": null,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "OSMANİYE",
+    "TARİFE & ADANA": null,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "CEYHAN",
+    "TARİFE & ADANA": null,
+    "CEYHAN": null,
+    "OSMANİYE": 280
+  },
+  {
+    "Güzergah": "ADANA",
+    "TARİFE & ADANA": null,
+    "CEYHAN": null,
+    "OSMANİYE": 280
+  },
+  {
+    "Güzergah": "NİĞDE",
+    "TARİFE & ADANA": 400,
+    "CEYHAN": 450,
+    "OSMANİYE": 650
+  },
+  {
+    "Güzergah": "AKSARAY",
+    "TARİFE & ADANA": 450,
+    "CEYHAN": 500,
+    "OSMANİYE": 750
+  },
+  {
+    "Güzergah": "KAYSERİ",
+    "TARİFE & ADANA": 700,
+    "CEYHAN": 750,
+    "OSMANİYE": 1000
+  },
+  {
+    "Güzergah": "ANKARA",
+    "TARİFE & ADANA": 800,
+    "CEYHAN": 850,
+    "OSMANİYE": 1050
+  },
+  {
+    "Güzergah": "BOLU",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": 1650
+  },
+  {
+    "Güzergah": "DÜZCE",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": 1650
+  },
+  {
+    "Güzergah": "SAKARYA",
+    "TARİFE & ADANA": 1600,
+    "CEYHAN": 1650,
+    "OSMANİYE": 1650
+  },
+  {
+    "Güzergah": "KOCAELİ",
+    "TARİFE & ADANA": 1600,
+    "CEYHAN": 1650,
+    "OSMANİYE": 1650
+  },
+  {
+    "Güzergah": "GEBZE",
+    "TARİFE & ADANA": 1600,
+    "CEYHAN": 1650,
+    "OSMANİYE": 1650
+  },
+  {
+    "Güzergah": "İSTANBUL",
+    "TARİFE & ADANA": 1600,
+    "CEYHAN": 1650,
+    "OSMANİYE": 1650
+  },
+  {
+    "Güzergah": "EREĞLİ",
+    "TARİFE & ADANA": 550,
+    "CEYHAN": 600,
+    "OSMANİYE": 900
+  },
+  {
+    "Güzergah": "KONYA",
+    "TARİFE & ADANA": 800,
+    "CEYHAN": 850,
+    "OSMANİYE": 1000
+  },
+  {
+    "Güzergah": "ILGIN",
+    "TARİFE & ADANA": 1000,
+    "CEYHAN": 1050,
+    "OSMANİYE": 1100
+  },
+  {
+    "Güzergah": "AKŞEHİR",
+    "TARİFE & ADANA": 1000,
+    "CEYHAN": 1050,
+    "OSMANİYE": 1100
+  },
+  {
+    "Güzergah": "ÇAY",
+    "TARİFE & ADANA": 1200,
+    "CEYHAN": 1250,
+    "OSMANİYE": 1250
+  },
+  {
+    "Güzergah": "AFYON",
+    "TARİFE & ADANA": 1200,
+    "CEYHAN": 1250,
+    "OSMANİYE": 1250
+  },
+  {
+    "Güzergah": "BANAZ",
+    "TARİFE & ADANA": 1400,
+    "CEYHAN": 1450,
+    "OSMANİYE": 1450
+  },
+  {
+    "Güzergah": "UŞAK",
+    "TARİFE & ADANA": 1400,
+    "CEYHAN": 1450,
+    "OSMANİYE": 1450
+  },
+  {
+    "Güzergah": "KULA",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": 1550
+  },
+  {
+    "Güzergah": "SALİHLİ",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": 1550
+  },
+  {
+    "Güzergah": "TURGUTLU",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": 1550
+  },
+  {
+    "Güzergah": "MANİSA",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": 1550
+  },
+  {
+    "Güzergah": "İZMİR",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": 1550
+  },
+  {
+    "Güzergah": "SELÇUK",
+    "TARİFE & ADANA": 1700,
+    "CEYHAN": 1750,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "KUŞADASI",
+    "TARİFE & ADANA": 1800,
+    "CEYHAN": 1850,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "BEYŞEHİR",
+    "TARİFE & ADANA": 1000,
+    "CEYHAN": 1050,
+    "OSMANİYE": 1200
+  },
+  {
+    "Güzergah": "Ş.KARAAĞAÇ",
+    "TARİFE & ADANA": 1200,
+    "CEYHAN": 1250,
+    "OSMANİYE": 1300
+  },
+  {
+    "Güzergah": "ISPARTA",
+    "TARİFE & ADANA": 1300,
+    "CEYHAN": 1350,
+    "OSMANİYE": 1400
+  },
+  {
+    "Güzergah": "DİNAR",
+    "TARİFE & ADANA": 1400,
+    "CEYHAN": 1450,
+    "OSMANİYE": 1500
+  },
+  {
+    "Güzergah": "DENİZLİ",
+    "TARİFE & ADANA": 1600,
+    "CEYHAN": 1650,
+    "OSMANİYE": 1600
+  },
+  {
+    "Güzergah": "TAVAS",
+    "TARİFE & ADANA": 1600,
+    "CEYHAN": 1650,
+    "OSMANİYE": 1650
+  },
+  {
+    "Güzergah": "NAZİLLİ",
+    "TARİFE & ADANA": 1700,
+    "CEYHAN": 1750,
+    "OSMANİYE": 1700
+  },
+  {
+    "Güzergah": "AYDIN",
+    "TARİFE & ADANA": 1700,
+    "CEYHAN": 1750,
+    "OSMANİYE": 1700
+  },
+  {
+    "Güzergah": "ÇİNE",
+    "TARİFE & ADANA": 1800,
+    "CEYHAN": 1850,
+    "OSMANİYE": 1800
+  },
+  {
+    "Güzergah": "YATAĞAN",
+    "TARİFE & ADANA": 1800,
+    "CEYHAN": 1850,
+    "OSMANİYE": 1800
+  },
+  {
+    "Güzergah": "MUĞLA",
+    "TARİFE & ADANA": 1800,
+    "CEYHAN": 1850,
+    "OSMANİYE": 1800
+  },
+  {
+    "Güzergah": "MARMARİS",
+    "TARİFE & ADANA": 1800,
+    "CEYHAN": 1850,
+    "OSMANİYE": 1800
+  },
+  {
+    "Güzergah": "POLATLI",
+    "TARİFE & ADANA": 1000,
+    "CEYHAN": 1050,
+    "OSMANİYE": 1200
+  },
+  {
+    "Güzergah": "ESKİŞEHİR",
+    "TARİFE & ADANA": 1350,
+    "CEYHAN": 1400,
+    "OSMANİYE": 1400
+  },
+  {
+    "Güzergah": "KÜTAHYA",
+    "TARİFE & ADANA": 1400,
+    "CEYHAN": 1450,
+    "OSMANİYE": 1450
+  },
+  {
+    "Güzergah": "BOZÜYÜK",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": 1550
+  },
+  {
+    "Güzergah": "İNEGÖL",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": 1550
+  },
+  {
+    "Güzergah": "BURSA",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": 1550
+  },
+  {
+    "Güzergah": "KARACABEY",
+    "TARİFE & ADANA": 1700,
+    "CEYHAN": 1750,
+    "OSMANİYE": 1750
+  },
+  {
+    "Güzergah": "BANDIRMA",
+    "TARİFE & ADANA": 1700,
+    "CEYHAN": 1750,
+    "OSMANİYE": 1750
+  },
+  {
+    "Güzergah": "ERDEK",
+    "TARİFE & ADANA": 1700,
+    "CEYHAN": 1750,
+    "OSMANİYE": 1750
+  },
+  {
+    "Güzergah": "M.KEMALPAŞA",
+    "TARİFE & ADANA": 1600,
+    "CEYHAN": 1650,
+    "OSMANİYE": 1650
+  },
+  {
+    "Güzergah": "SUSURLUK",
+    "TARİFE & ADANA": 1700,
+    "CEYHAN": 1750,
+    "OSMANİYE": 1750
+  },
+  {
+    "Güzergah": "BALIKESİR",
+    "TARİFE & ADANA": 1700,
+    "CEYHAN": 1750,
+    "OSMANİYE": 1750
+  },
+  {
+    "Güzergah": "EDREMİT",
+    "TARİFE & ADANA": 1800,
+    "CEYHAN": 1850,
+    "OSMANİYE": 1850
+  },
+  {
+    "Güzergah": "BURHANİYE",
+    "TARİFE & ADANA": 1800,
+    "CEYHAN": 1850,
+    "OSMANİYE": 1850
+  },
+  {
+    "Güzergah": "AYVALIK",
+    "TARİFE & ADANA": 1800,
+    "CEYHAN": 1850,
+    "OSMANİYE": 1850
+  },
+  {
+    "Güzergah": "AKÇAKOCA",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "ALAPLI",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "EREĞLİ",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "KOZLU",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "ZONGULDAK",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": 1700
+  },
+  {
+    "Güzergah": "KARABÜK",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "SAFRANBOLU",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": 1550,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "ARAÇ",
+    "TARİFE & ADANA": 1600,
+    "CEYHAN": 1650,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "KASTAMONU",
+    "TARİFE & ADANA": 1600,
+    "CEYHAN": 1650,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "BİGA",
+    "TARİFE & ADANA": 1950,
+    "CEYHAN": 2000,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "LAPSEKİ",
+    "TARİFE & ADANA": 1950,
+    "CEYHAN": 2000,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "ÇANAKKALE",
+    "TARİFE & ADANA": 1950,
+    "CEYHAN": 2000,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "MERSİN",
+    "TARİFE & ADANA": null,
+    "CEYHAN": null,
+    "OSMANİYE": 400
+  },
+  {
+    "Güzergah": "ERDEMLİ",
+    "TARİFE & ADANA": 500,
+    "CEYHAN": 550,
+    "OSMANİYE": 600
+  },
+  {
+    "Güzergah": "SİLİFKE",
+    "TARİFE & ADANA": 700,
+    "CEYHAN": 750,
+    "OSMANİYE": 800
+  },
+  {
+    "Güzergah": "ANAMUR",
+    "TARİFE & ADANA": 950,
+    "CEYHAN": 1000,
+    "OSMANİYE": 1000
+  },
+  {
+    "Güzergah": "GAZİPAŞA",
+    "TARİFE & ADANA": 1100,
+    "CEYHAN": 1150,
+    "OSMANİYE": 1300
+  },
+  {
+    "Güzergah": "ALANYA",
+    "TARİFE & ADANA": 1150,
+    "CEYHAN": 1200,
+    "OSMANİYE": 1300
+  },
+  {
+    "Güzergah": "MANAVGAT",
+    "TARİFE & ADANA": 1150,
+    "CEYHAN": 1200,
+    "OSMANİYE": 1300
+  },
+  {
+    "Güzergah": "SERİK",
+    "TARİFE & ADANA": 1150,
+    "CEYHAN": 1200,
+    "OSMANİYE": 1300
+  },
+  {
+    "Güzergah": "ANTALYA",
+    "TARİFE & ADANA": 1150,
+    "CEYHAN": 1200,
+    "OSMANİYE": 1300
+  },
+  {
+    "Güzergah": "FETHİYE",
+    "TARİFE & ADANA": 1700,
+    "CEYHAN": 1750,
+    "OSMANİYE": 1700
+  },
+  {
+    "Güzergah": "DALAMAN",
+    "TARİFE & ADANA": 1800,
+    "CEYHAN": 1850,
+    "OSMANİYE": 1800
+  },
+  {
+    "Güzergah": "ORTACA",
+    "TARİFE & ADANA": 1800,
+    "CEYHAN": 1850,
+    "OSMANİYE": 1800
+  },
+  {
+    "Güzergah": "KÖYCEĞİZ",
+    "TARİFE & ADANA": 1800,
+    "CEYHAN": 1850,
+    "OSMANİYE": 1800
+  },
+  {
+    "Güzergah": "MARMARİS",
+    "TARİFE & ADANA": 1800,
+    "CEYHAN": 1850,
+    "OSMANİYE": 1800
+  },
+  {
+    "Güzergah": "NEVŞEHİR",
+    "TARİFE & ADANA": 800,
+    "CEYHAN": 850,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "GÜLŞEHİR",
+    "TARİFE & ADANA": 800,
+    "CEYHAN": 850,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "HACIBEKTAŞ",
+    "TARİFE & ADANA": 800,
+    "CEYHAN": 850,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "MUCUR",
+    "TARİFE & ADANA": 950,
+    "CEYHAN": 1000,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "KIRŞEHİR",
+    "TARİFE & ADANA": 950,
+    "CEYHAN": 1000,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "KIRIKKALE",
+    "TARİFE & ADANA": 1050,
+    "CEYHAN": 1100,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "SÖKE",
+    "TARİFE & ADANA": 1800,
+    "CEYHAN": 1850,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "MİLAS",
+    "TARİFE & ADANA": 1900,
+    "CEYHAN": 1950,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "BODRUM",
+    "TARİFE & ADANA": 1900,
+    "CEYHAN": 1950,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "GEMLİK",
+    "TARİFE & ADANA": 1600,
+    "CEYHAN": 1650,
+    "OSMANİYE": 1700
+  },
+  {
+    "Güzergah": "ORHANGAZİ",
+    "TARİFE & ADANA": 1700,
+    "CEYHAN": 1750,
+    "OSMANİYE": 1700
+  },
+  {
+    "Güzergah": "YALOVA",
+    "TARİFE & ADANA": 1700,
+    "CEYHAN": 1750,
+    "OSMANİYE": 1700
+  },
+  {
+    "Güzergah": "HATAY",
+    "TARİFE & ADANA": 400,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "OSMANİYE",
+    "TARİFE & ADANA": 280,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "GAZİANTEP",
+    "TARİFE & ADANA": 420,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "ŞANLIURFA",
+    "TARİFE & ADANA": 650,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "SİVEREK",
+    "TARİFE & ADANA": 900,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "DİYARBAKIR",
+    "TARİFE & ADANA": 1100,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "BATMAN",
+    "TARİFE & ADANA": null,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "SİİRT",
+    "TARİFE & ADANA": null,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "VİRANŞEHİR",
+    "TARİFE & ADANA": 1000,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "KIZILTEPE",
+    "TARİFE & ADANA": 1300,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "MARDİN",
+    "TARİFE & ADANA": 1300,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "CİZRE",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  },
+  {
+    "Güzergah": "SİLOPİ",
+    "TARİFE & ADANA": 1500,
+    "CEYHAN": null,
+    "OSMANİYE": null
+  }
+]

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Firma Karşılaştır</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f8fafc; }
+    h2 { font-size: 26px; color: #111827; }
+    #arama { padding: 10px; width: 300px; margin-bottom: 15px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 12px; border: 1px solid #ddd; text-align: center; font-size: 16px; }
+    th { background-color: #2563eb; color: white; }
+    .btn { padding: 10px 18px; background-color: #22c55e; color: white; border: none; border-radius: 5px; font-size: 16px; margin-top: 15px; cursor: pointer; }
+    .btn:hover { background-color: #16a34a; }
+  </style>
+</head>
+<body>
+  <h2>📊 Firma Karşılaştır</h2>
+  <input type="text" id="arama" placeholder="Firma, kalkış, varış veya fiyat ara..." onkeyup="filtrele()">
+
+  <table>
+    <thead>
+      <tr>
+        <th>Firma</th>
+        <th>Kalkış</th>
+        <th>Varış</th>
+        <th>Fiyat (₺)</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <div style="text-align: center;">
+    <button class="btn" id="loadMore">+50 Daha Göster</button>
+  </div>
+
+  <script>
+    let data = [];
+    let filtered = [];
+    let index = 0;
+    const limit = 50;
+
+    fetch("firma_karsilastirma_data.json")
+      .then(res => res.json())
+      .then(json => {
+        data = json;
+        filtered = [...data];
+        renderMore();
+      });
+
+    function renderMore() {
+      const tbody = document.getElementById("tableBody");
+      const slice = filtered.slice(index, index + limit);
+      slice.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.firma}</td>
+          <td>${item.kalkis}</td>
+          <td>${item.varis}</td>
+          <td>${item.fiyat} ₺</td>
+        `;
+        tbody.appendChild(tr);
+      });
+      index += limit;
+      document.getElementById("loadMore").style.display = index >= filtered.length ? "none" : "inline-block";
+    }
+
+    function filtrele() {
+      const arama = document.getElementById("arama").value.toLowerCase();
+      filtered = data.filter(item =>
+        item.firma.toLowerCase().includes(arama) ||
+        item.kalkis.toLowerCase().includes(arama) ||
+        item.varis.toLowerCase().includes(arama) ||
+        item.fiyat.toString().includes(arama)
+      );
+      index = 0;
+      document.getElementById("tableBody").innerHTML = "";
+      renderMore();
+    }
+
+    document.getElementById("loadMore").addEventListener("click", renderMore);
+  </script>
+</body>
+</html>

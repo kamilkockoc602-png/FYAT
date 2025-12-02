@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <meta charset="UTF-8">
+  <title>Bakanlık Fiyat Tarifesi</title>
+  <style>
+    body {
+      font-family: Arial;
+      background-color: #f4f6f8;
+      padding: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+    h1 { color: #2e86de; }
+    input {
+      padding: 10px;
+      width: 300px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #2e86de;
+      color: #fff;
+    }
+    #loadMore {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #2e86de;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .dark-mode body {
+      background-color: #121212;
+      color: #eee;
+    }
+    .dark-mode table {
+      background: #1e1e1e;
+    }
+    .dark-mode th {
+      background-color: #333;
+    }
+    .dark-mode input {
+      background: #222;
+      color: white;
+      border-color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bakanlık Fiyat Tarifesi</h1>
+  <input type="text" id="searchInput" placeholder="Örn: Adana-İzmir">
+  <table>
+    <thead>
+      <tr>
+        <th>Kalkış-Varış</th>
+        <th>Tarife Fiyatı</th>
+        <th>İnd. Fiyat</th>
+        <th>KM</th>
+        <th>Fiyat/KM</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+  <button id="loadMore">+50</button>
+
+  <script>
+    let allData = [];
+    let filteredData = [];
+    let displayIndex = 0;
+    const limit = 50;
+
+    fetch('bakanlik_data.json')
+      .then(res => res.json())
+      .then(data => {
+        allData = data;
+        filteredData = [...allData];
+        displayIndex = 0;
+        renderNext();
+      });
+
+    function renderNext() {
+      const body = document.getElementById("tableBody");
+      const chunk = filteredData.slice(displayIndex, displayIndex + limit);
+      chunk.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.route}</td>
+          <td>${item.price}</td>
+          <td>${item.discounted}</td>
+          <td>${item.km}</td>
+          <td>${item.unit}</td>
+        `;
+        body.appendChild(tr);
+      });
+      displayIndex += limit;
+      document.getElementById("loadMore").style.display =
+        displayIndex >= filteredData.length ? "none" : "block";
+    }
+
+    function normalize(text) {
+      return text
+        .toLowerCase()
+        .replace(/–|—/g, "-")
+        .replace(/bus station/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    document.getElementById("searchInput").addEventListener("input", function () {
+      const keyword = normalize(this.value);
+      const parts = keyword.split("-");
+      filteredData = allData.filter(d => {
+        const route = normalize(d.route);
+        return parts.every(p => route.includes(p));
+      });
+      displayIndex = 0;
+      document.getElementById("tableBody").innerHTML = "";
+      renderNext();
+    });
+
+    document.getElementById("loadMore").addEventListener("click", renderNext);
+
+    // Dark mode postMessage listener
+    window.addEventListener("message", (e) => {
+      if (e.data.mode === "dark") {
+        document.documentElement.classList.add("dark-mode");
+      } else {
+        document.documentElement.classList.remove("dark-mode");
+      }
+    });
+  </script>
+</body>
+</html>

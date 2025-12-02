@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bölge Fiyatları</title>
+  <link rel="icon" type="image/png" href="favicon.png"> <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif; /* Google Font kullan */
+      padding: 20px;
+      background: linear-gradient(to right, #6dd5ed, #2193b0); /* Yeni, daha canlı arka plan */
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      text-align: center;
+      color: #fff; /* Başlık rengi beyaza çevrildi */
+      margin-bottom: 40px;
+      font-size: 2.8em; /* Başlık boyutu büyütüldü */
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3); /* Gölge eklendi */
+    }
+
+    .select-container {
+      position: relative;
+      width: 100%;
+      max-width: 500px; /* Seçim kutusunun maksimum genişliği */
+      margin: 20px auto;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      overflow: hidden; /* Kenar yuvarlaklığı için */
+      transition: all 0.3s ease;
+    }
+
+    .select-container:hover {
+        box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        transform: translateY(-3px);
+    }
+
+    select {
+      appearance: none; /* Varsayılan select stilini kaldır */
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 100%;
+      padding: 18px 25px; /* Büyük padding */
+      font-size: 1.4em; /* Yazı boyutu büyütüldü */
+      color: #333;
+      border: none; /* Kenarlık yok */
+      background-color: transparent; /* Arka plan transparan */
+      cursor: pointer;
+      outline: none;
+      border-radius: 12px; /* Köşeleri yuvarlak */
+    }
+
+    /* Seçim kutusuna özel ok ikonu */
+    .select-container::after {
+      content: '▼'; /* Aşağı ok ikonu */
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #2193b0; /* Ok rengi */
+      font-size: 1.2em;
+      pointer-events: none; /* Okun tıklanmasını engelle */
+    }
+
+    select:focus + .select-container::after {
+        color: #6dd5ed; /* Odaklandığında ok rengi değişir */
+    }
+
+    table {
+      width: 100%;
+      max-width: 1000px;
+      margin: 40px auto; /* Tablonun üstünden boşluk */
+      display: block;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      border-radius: 12px; /* Köşeleri yuvarlak */
+      overflow: hidden; /* Yuvarlak köşeler için içerik taşmasını engelle */
+    }
+
+    th, td {
+      border: 1px solid #e0e0e0; /* Daha açık kenarlık */
+      padding: 15px; /* Padding artırıldı */
+      text-align: center;
+      font-size: 1.1em; /* Yazı boyutu artırıldı */
+    }
+
+    th {
+      background-color: #2193b0; /* Daha canlı mavi tonu */
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase; /* Başlıkları büyük harf yap */
+      position: sticky; /* Başlık satırını sabit tut (kaydırmada) */
+      top: 0;
+      z-index: 2; /* Diğer içeriklerin üstünde kalması için */
+    }
+
+    tr:nth-child(even) { /* Çift satırlara arka plan rengi */
+      background-color: #f8f8f8;
+    }
+
+    tr:hover {
+      background-color: #eef; /* Satır üzerine gelince renk değişimi */
+    }
+
+    /* Tablo Responsive */
+    .table-wrapper {
+        overflow-x: auto; /* Yatay kaydırma çubuğu */
+        width: 100%;
+        max-width: 1000px;
+        margin: 20px auto;
+    }
+
+    /* Mobil için font büyüklükleri ve responsive ayarlar */
+    @media (max-width: 768px) {
+      body { padding: 15px; }
+      h2 { font-size: 2em; margin-bottom: 25px; }
+      .select-container { max-width: 90%; }
+      select { padding: 15px 20px; font-size: 1.2em; }
+      .select-container::after { right: 15px; font-size: 1em; }
+      th, td { padding: 10px; font-size: 0.9em; }
+      table { min-width: 500px; /* Küçük ekranlarda tablonun küçülmesini engelle */ }
+    }
+
+    @media (max-width: 480px) {
+        h2 { font-size: 1.8em; margin-bottom: 20px; }
+        select { font-size: 1.1em; padding: 12px 15px; }
+        .select-container::after { font-size: 0.9em; }
+        th, td { padding: 8px; font-size: 0.8em; }
+    }
+  </style>
+</head>
+<body>
+  <h2>📍 Bölge Fiyatları</h2>
+
+  <div class="select-container">
+    <select id="bolgeSec" onchange="gosterBolge()">
+      <option value="">Bölge Seçiniz</option>
+      <option value="adana_bolge_fiyatlari_guncel.json">Adana Bölge</option>
+      <option value="mersin_bolge_fiyatlari_guncel.json">Mersin Bölge</option>
+      <option value="hatay_bolge_fiyatlari_guncel.json">Hatay Bölge</option>
+      </select>
+  </div>
+
+  <div class="table-wrapper">
+    <table id="fiyatTablosu" style="display:none;">
+      <thead><tr id="baslikSatiri"></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    function gosterBolge() {
+      const secim = document.getElementById("bolgeSec").value;
+      const tablo = document.getElementById("fiyatTablosu");
+      const tbody = tablo.querySelector("tbody");
+      const baslikSatiri = document.getElementById("baslikSatiri");
+      
+      // Her seçimde loading veya boşaltma animasyonu ekleyebiliriz
+      tbody.innerHTML = '<tr><td colspan="99" style="text-align:center; padding:20px;">Veriler yükleniyor...</td></tr>';
+      tablo.style.display = "table"; // Yükleniyor mesajını göstermek için tabloyu göster
+
+      baslikSatiri.innerHTML = ""; // Başlık satırını temizle
+
+      if (!secim) {
+        tablo.style.display = "none";
+        return;
+      }
+
+      fetch(secim)
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Dosya bulunamadı veya ağ hatası: ' + res.statusText);
+            }
+            return res.json();
+        })
+        .then(veriler => {
+          tbody.innerHTML = ""; // Yükleniyor mesajını temizle
+
+          if (!veriler || veriler.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="99" style="text-align:center; padding:20px;">Bu bölge için veri bulunmamaktadır.</td></tr>';
+            baslikSatiri.innerHTML = ""; // Veri yoksa başlıkları da temizle
+            return;
+          }
+
+          const headers = Object.keys(veriler[0]);
+          headers.forEach(h => {
+            const th = document.createElement("th");
+            th.textContent = h;
+            baslikSatiri.appendChild(th);
+          });
+          veriler.forEach(row => {
+            const tr = document.createElement("tr");
+            headers.forEach(h => {
+              const td = document.createElement("td");
+              td.textContent = row[h] || "";
+              tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+          });
+          tablo.style.display = "table";
+        })
+        .catch(error => {
+            console.error("Veri çekme hatası:", error);
+            tbody.innerHTML = '<tr><td colspan="99" style="text-align:center; padding:20px; color:red;">Veri yüklenirken bir hata oluştu: ' + error.message + '</td></tr>';
+            baslikSatiri.innerHTML = "";
+            tablo.style.display = "table"; // Hata mesajını göstermek için tabloyu göster
+        });
+    }
+  </script>
+</body>
+</html>

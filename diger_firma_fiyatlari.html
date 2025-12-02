@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Diğer Firmaların Fiyatları</title>
+  <style>
+    body {
+      font-family: Arial;
+      background-color: #f1f5f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h2 {
+      font-size: 28px;
+      color: #333;
+    }
+    #arama {
+      margin-bottom: 20px;
+      padding: 10px;
+      width: 350px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: center;
+      font-size: 16px;
+    }
+    th {
+      background-color: #2563eb;
+      color: white;
+    }
+    .btn {
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #22c55e;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .btn:hover {
+      background-color: #16a34a;
+    }
+  </style>
+</head>
+<body>
+  <h2>🪙 Diğer Firmaların Fiyatları</h2>
+  <input type="text" id="arama" placeholder="Firma, şehir veya fiyat ara..." onkeyup="filtrele()">
+
+  <table>
+    <thead>
+      <tr>
+        <th>Firma</th>
+        <th>Kalkış - Varış (Tarih/Saat)</th>
+        <th>Fiyat (₺)</th>
+      </tr>
+    </thead>
+    <tbody id="veriTablosu"></tbody>
+  </table>
+
+  <div style="text-align:center">
+    <button class="btn" onclick="renderMore()">+50 Daha Göster</button>
+  </div>
+
+  <script>
+    let veriler = [];
+    let filtreli = [];
+    let index = 0;
+    const limit = 50;
+
+    fetch('diger_firma_data.json')
+      .then(res => res.json())
+      .then(data => {
+        veriler = data;
+        filtreli = [...veriler];
+        renderMore();
+      });
+
+    function renderMore() {
+      const tablo = document.getElementById("veriTablosu");
+      const goster = filtreli.slice(index, index + limit);
+      goster.forEach(v => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${v.company}</td><td>${v.route}</td><td>${v.price}</td>`;
+        tablo.appendChild(tr);
+      });
+      index += limit;
+    }
+
+    function filtrele() {
+      const arama = document.getElementById("arama").value.toLowerCase();
+      filtreli = veriler.filter(v => {
+        return (
+          v.company.toLowerCase().includes(arama) ||
+          v.route.toLowerCase().includes(arama) ||
+          v.price.toLowerCase().includes(arama)
+        );
+      });
+      index = 0;
+      document.getElementById("veriTablosu").innerHTML = "";
+      renderMore();
+    }
+  </script>
+</body>
+</html>

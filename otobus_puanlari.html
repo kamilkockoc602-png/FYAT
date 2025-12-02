@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Otobüs Puanları</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:20px;background:#f7fafc}
+    h2{color:#2563eb}
+    p.sub{color:#4b5563;margin-top:0;margin-bottom:10px}
+    input#arama{padding:8px;width:320px;border:1px solid #ccc;border-radius:6px;margin:10px 0 14px}
+    table{width:100%;border-collapse:collapse;background:#fff}
+    th,td{padding:10px;border:1px solid #e6e6e6;text-align:center}
+    th{background:#2563eb;color:#fff}
+    .badge{display:inline-block;padding:4px 10px;border-radius:999px}
+    .badge-good{background:#dcfce7}
+    .badge-mid{background:#fef9c3}
+    .badge-bad{background:#fee2e2}
+    .warning-box{background:#fff2f2;border:1px solid #fecaca;color:#b91c1c;padding:10px;border-radius:6px;margin-bottom:12px}
+    #hataMesaj{color:red;margin-top:10px}
+    .btn-primary{
+      padding:8px 16px;border-radius:6px;border:none;cursor:pointer;
+      background:#2563eb;color:#fff;font-size:14px;margin-right:8px
+    }
+    .btn-primary[disabled]{opacity:0.6;cursor:default}
+    .status-msg{font-size:13px;margin-top:4px}
+  </style>
+</head>
+<body>
+  <h2>🚌 Otobüs Puanları</h2>
+  <p class="sub">
+    Kamil Koç filosuna ait araçların son kalite kontrol puanları.
+    70 puan altı otobüsler hem ekranda uyarı olarak gösterilir, hem de isterseniz mail ile bildirilebilir.
+  </p>
+
+  <div id="warningBox" class="warning-box" style="display:none"></div>
+
+  <div style="margin-bottom:8px">
+    <button id="sendMailBtn" class="btn-primary" onclick="mailGonder()">
+      70 Puan Altı Otobüsler İçin Mail Gönder
+    </button>
+    <span id="mailStatus" class="status-msg"></span>
+  </div>
+
+  <input id="arama" placeholder="Plaka, bölge, marka..." onkeyup="filtrele()">
+
+  <table>
+    <thead>
+      <tr><th>Plaka</th><th>Bölge</th><th>Marka</th><th>Tip</th><th>Modeli</th><th>Cari</th><th>Puan</th><th>Tarih</th></tr>
+    </thead>
+    <tbody id="puanTablosu"></tbody>
+  </table>
+
+  <div id="hataMesaj"></div>
+
+  <script>
+    const FUNC_URL = '/.netlify/functions/send-alert-email';
+    let tumVeri = [];
+
+    async function loadData(){
+      try{
+        const r = await fetch('otobus_puanlari.json',{cache:'no-cache'});
+        if(!r.ok) throw new Error('JSON HTTP '+r.status);
+        const data = await r.json();
+        tumVeri = Array.isArray(data) ? data : [];
+        renderAll();
+      }catch(e){
+        document.getElementById('hataMesaj').textContent = 'Veri yüklenemedi: ' + (e.message || e);
+      }
+    }
+
+    function renderAll(){
+      document.getElementById('hataMesaj').textContent = '';
+      prepareWarning();
+      const tbody = document.getElementById('puanTablosu');
+      tbody.innerHTML = '';
+      tumVeri.forEach(item => tbody.appendChild(rowFor(item)));
+    }
+
+    function rowFor(item){
+      const tr = document.createElement('tr');
+      const pu = Number(item.son_kalite_puani ?? 0);
+      let cls = 'badge-mid';
+      if (pu >= 85) cls = 'badge-good';
+      else if (pu < 70) cls = 'badge-bad';
+      const puHtml = isNaN(pu) ? '' : '<span class="badge '+cls+'">'+pu+'</span>';
+      tr.innerHTML =
+        `<td>${item.plaka||''}</td>`+
+        `<td>${item.bolge||''}</td>`+
+        `<td>${item.marka||''}</td>`+
+        `<td>${item.tip || item.tipi || ''}</td>`+
+        `<td>${item.modeli||''}</td>`+
+        `<td>${item.cari_unvan||''}</td>`+
+        `<td>${puHtml}</td>`+
+        `<td>${item.son_kalite_tarihi||''}</td>`;
+      return tr;
+    }
+
+    function prepareWarning(){
+      const kritik = tumVeri.filter(v => Number(v.son_kalite_puani) < 70);
+      const box = document.getElementById('warningBox');
+      if(!kritik.length){
+        box.style.display='none';
+        box.innerHTML='';
+        return;
+      }
+      box.style.display='block';
+      box.innerHTML =
+        '<strong>⚠ 70 puan altı otobüsler — acil eksiklerini gidermesi gerekiyor:</strong>'+
+        '<ul style="margin:6px 0 0 18px"></ul>';
+      const ul = box.querySelector('ul');
+      kritik.forEach(it => {
+        const li = document.createElement('li');
+        li.textContent =
+          `${it.plaka || ''} | Bölge: ${it.bolge || ''} | Puan: ${it.son_kalite_puani ?? '-'} | Tarih: ${it.son_kalite_tarihi || ''}`;
+        ul.appendChild(li);
+      });
+    }
+
+    function filtrele(){
+      const q = (document.getElementById('arama').value || '').toLowerCase();
+      const filtered = tumVeri.filter(item =>
+        (item.plaka||'').toLowerCase().includes(q) ||
+        (item.bolge||'').toLowerCase().includes(q) ||
+        (item.marka||'').toLowerCase().includes(q) ||
+        (item.tip||item.tipi||'').toLowerCase().includes(q) ||
+        (item.cari_unvan||'').toLowerCase().includes(q)
+      );
+      const tbody = document.getElementById('puanTablosu');
+      tbody.innerHTML = '';
+      filtered.forEach(item => tbody.appendChild(rowFor(item)));
+    }
+
+    async function mailGonder(){
+      const btn = document.getElementById('sendMailBtn');
+      const status = document.getElementById('mailStatus');
+      const kritik = tumVeri.filter(v => Number(v.son_kalite_puani) < 70);
+
+      if(!kritik.length){
+        status.textContent = '70 puan altı kayıt yok, mail gönderilmedi.';
+        return;
+      }
+
+      btn.disabled = true;
+      status.textContent = 'Mail gönderiliyor...';
+
+      try{
+        const res = await fetch(FUNC_URL,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ items: kritik })
+        });
+        const txt = await res.text();
+        if(!res.ok){
+          status.textContent = 'Hata: ' + txt;
+        }else{
+          status.textContent = 'Mail başarıyla gönderildi.';
+        }
+      }catch(e){
+        status.textContent = 'Mail gönderilemedi: ' + (e.message || e);
+      }finally{
+        btn.disabled = false;
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Otobüs Puanları Excel → JSON Dönüştürücü</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background:#f4f6f8; }
+    h2 { color:#2563eb; }
+    input[type="file"] { margin: 10px 0; }
+    textarea {
+      width: 100%; height: 320px; margin-top: 15px;
+      font-family: monospace; font-size: 13px;
+    }
+    button { padding:8px 16px; margin-top:10px; cursor:pointer; }
+    ul { margin-top: 8px; }
+    li { font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h2>Otobüs Puanları Excel → JSON</h2>
+  <p>Excel sütun başlıkları (satır 1):</p>
+  <ul>
+    <li><b>Plaka</b></li>
+    <li><b>Bolge</b> veya <b>Bölge</b></li>
+    <li><b>Marka</b></li>
+    <li><b>Tipi</b> (veya <b>Tip</b>)</li>
+    <li><b>Modeli</b></li>
+    <li><b>Cari Unvan</b></li>
+    <li><b>SonKaliteKontrolPuani</b></li>
+    <li><b>SonKaliteKontrolTarihi</b></li>
+  </ul>
+
+  <input type="file" id="excelFile" accept=".xlsx,.xls" />
+  <button id="convertBtn">JSON'a Dönüştür</button>
+
+  <textarea id="output" placeholder="Burada otobus_puanlari.json içeriği görünecek"></textarea>
+
+  <script>
+    // Excel seri tarihini "gg.aa.yyyy" formatına çevir
+    function excelDateToString(v) {
+      if (v === null || v === undefined || v === '') return '';
+      if (typeof v === 'string') return v; // zaten string ise bırak
+      if (typeof v === 'number') {
+        const jsDate = new Date(Math.round((v - 25569) * 86400 * 1000));
+        const d = String(jsDate.getDate()).padStart(2, '0');
+        const m = String(jsDate.getMonth() + 1).padStart(2, '0');
+        const y = jsDate.getFullYear();
+        return `${d}.${m}.${y}`;
+      }
+      return String(v);
+    }
+
+    document.getElementById('convertBtn').addEventListener('click', () => {
+      const file = document.getElementById('excelFile').files[0];
+      if (!file) {
+        alert('Önce Excel dosyasını seçin.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const wb = XLSX.read(data, { type: 'array' });
+          const ws = wb.Sheets[wb.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+
+          const out = rows.map(r => ({
+            plaka: r['Plaka'] || '',
+            bolge: r['Bolge'] || r['Bölge'] || '',
+            marka: r['Marka'] || '',
+            tip: r['Tipi'] || r['Tip'] || '',
+            modeli: r['Modeli'] || '',
+            cari_unvan: r['Cari Unvan'] || r['CariUnvan'] || '',
+            son_kalite_puani: Number(r['SonKaliteKontrolPuani'] || 0),
+            son_kalite_tarihi: excelDateToString(
+              r['SonKaliteKontrolTarihi']
+            )
+          }));
+
+          document.getElementById('output').value =
+            JSON.stringify(out, null, 2);
+        } catch (err) {
+          console.error(err);
+          alert('Excel okunurken hata oluştu: ' + (err.message || err));
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  </script>
+</body>
+</html>

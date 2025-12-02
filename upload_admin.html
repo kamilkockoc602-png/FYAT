@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Yüklemeler — Admin</title></head>
+<body>
+  <h2>Yüklemeler (Admin)</h2>
+  <button id="refresh">Yenile</button>
+  <table id="tbl" border="1" style="width:100%;margin-top:10px">
+    <thead><tr><th>ID</th><th>Route</th><th>Price</th><th>Uploaded By</th><th>Uploaded At</th><th>Action</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const API_BASE = 'https://genel-fiyatlar-tarife.netlify.app/panel.html?login=true'; // backend base; farklı bir host ise örn: 'http://192.168.1.112:5000'
+
+    // ---------- TEST İÇİN HAZIRLANMIŞ SABİT ADMIN KEY ----------
+    // UYARI: Bu satırı PROD ortamına veya herkese açık repoya kesinlikle commit etmeyin!
+    const adminKey = 'HAZER';
+    // -----------------------------------------------------------
+
+    async function load() {
+      if (!adminKey) return alert('Admin anahtarı boş. Kodu kontrol edin.');
+      try {
+        const res = await fetch((API_BASE || '') + '/api/uploads', {
+          headers: {
+            'X-Admin-Key': adminKey
+            // veya Authorization: 'Bearer ' + adminKey
+          }
+        });
+        if (!res.ok) {
+          const txt = await res.text().catch(()=>'');
+          alert('Yetkisiz veya hata: ' + res.status + ' ' + res.statusText + (txt ? '\n' + txt : ''));
+          return;
+        }
+        const data = await res.json();
+        const tbody = document.querySelector('#tbl tbody');
+        tbody.innerHTML = '';
+        data.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${row.id}</td><td>${row.route}</td><td>${row.price ?? ''}</td><td>${row.uploaded_by}</td><td>${row.uploaded_at}</td>
+            <td><button data-id="${row.id}">Sil</button></td>`;
+          tbody.appendChild(tr);
+        });
+
+        tbody.querySelectorAll('button').forEach(btn=>{
+          btn.addEventListener('click', async (e) => {
+            const id = btn.getAttribute('data-id');
+            if (!confirm('Bu kaydı silmek istediğinize emin misiniz?')) return;
+            const res2 = await fetch((API_BASE || '') + '/api/uploads/' + id, {
+              method: 'DELETE',
+              headers: { 'X-Admin-Key': adminKey }
+            });
+            if (!res2.ok) {
+              const t = await res2.text().catch(()=>'');
+              alert('Silme başarısız: ' + res2.status + ' ' + res2.statusText + (t ? '\n' + t : ''));
+              return;
+            }
+            alert('Silindi.');
+            load();
+          });
+        });
+      } catch (err) {
+        console.error(err);
+        alert('Sunucuya bağlanırken hata oluştu: ' + (err.message || err));
+      }
+    }
+
+    document.getElementById('refresh').addEventListener('click', load);
+    // otomatik yükle
+    load();
+  </script>
+</body>
+</html>

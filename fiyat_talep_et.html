@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Toplu Fiyat Talep Et</title>
+  <style>
+    body {
+      font-family: Arial;
+      background-color: #f4f6f8;
+      padding: 40px;
+    }
+    h2 {
+      color: #2980b9;
+    }
+    textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-family: monospace;
+    }
+    button {
+      background-color: #2980b9;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+    .note, .success, .error {
+      font-size: 13px;
+      margin-top: 12px;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Toplu Fiyat Talebi Oluştur</h2>
+  <p class="note">Her satıra bir güzergah ve fiyat yazın. Örn:<br><code>Adana - İzmir: 1100</code></p>
+  <textarea id="inputText" rows="10" placeholder="Adana - İzmir: 1100
+Afyon - Ankara: 800
+..."></textarea>
+  <button onclick="processBulk()">Talepleri Gönder</button>
+  <div id="status"></div>
+
+  <form id="formsubmit" action="https://formsubmit.co/hasan_hazer6919@hotmail.com" method="POST" style="display:none;">
+    <input type="hidden" name="_subject" value="Toplu Fiyat Talebi" />
+    <input type="hidden" name="İçerik" id="formContent" />
+    <input type="hidden" name="_captcha" value="false" />
+  </form>
+
+  <script>
+    let data = [];
+
+    fetch("guncel_data.json")
+      .then(r => r.json())
+      .then(j => data = j);
+
+    function normalize(text) {
+      return text.toLowerCase().replace(/–|—/g, "-").replace(/\s+/g, " ").trim();
+    }
+
+    function reverseRoute(route) {
+      return route.split("-").reverse().join("-").trim();
+    }
+
+    function processBulk() {
+      const raw = document.getElementById("inputText").value.trim();
+      const lines = raw.split("\n");
+      let success = [];
+      let failed = [];
+
+      lines.forEach(line => {
+        const [routePart, pricePart] = line.split(":");
+        if (!routePart || !pricePart) {
+          failed.push(`${line} ❌ Format Hatalı`);
+          return;
+        }
+
+        const routeInput = normalize(routePart.trim());
+        const price = parseFloat(pricePart.trim());
+        const parts = routeInput.split("-");
+        const match = data.find(item => {
+          const r = normalize(item.route);
+          return (
+            parts.every(p => r.includes(p.trim())) ||
+            normalize(reverseRoute(routeInput)) === normalize(r)
+          );
+        });
+
+        if (!match) {
+          failed.push(`${line} ❌ Güzergah bulunamadı`);
+          return;
+        }
+
+        const min = parseFloat(match.min);
+        const max = parseFloat(match.max);
+        if (price < min || price > max) {
+          failed.push(`${line} ❌ Fiyat ${min}-${max} TL aralığında olmalı`);
+        } else {
+          success.push(`✅ ${routePart.trim()}: ${price} TL`);
+        }
+      });
+
+      const statusDiv = document.getElementById("status");
+      statusDiv.innerHTML = "";
+
+      if (success.length > 0) {
+        const content = success.join("\n");
+        document.getElementById("formContent").value = content;
+        document.getElementById("formsubmit").submit();
+        statusDiv.innerHTML = `<p class='success'>✅ Talebiniz hasan.hazer@kamilkoc.com.tr hesabına iletilmiştir.</p>`;
+      }
+
+      if (failed.length > 0) {
+        statusDiv.innerHTML += "<p class='error'>" + failed.join("<br>") + "</p>";
+      }
+    }
+  </script>
+</body>
+</html>

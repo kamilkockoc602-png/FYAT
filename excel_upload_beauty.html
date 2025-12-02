@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Excel ile Fiyat Yükle — Güzel Arayüz</title>
+  <link rel="stylesheet" href="ui.css">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+  <!-- Okunabilirlik için ek stil -->
+  <style>
+    /* Genel form alanları (açık tema) */
+    input[type="text"], input[type="date"], input[type="password"], textarea, select, input[type="file"] {
+      color: #0b1220 !important;             /* koyu okunaklı metin */
+      background: #ffffff !important;        /* beyaz arka plan */
+      border: 1px solid #ccd0d6 !important;  /* açık gri çerçeve */
+      caret-color: #0b1220;
+    }
+
+    /* Placeholder okunurluğu */
+    input::placeholder, textarea::placeholder {
+      color: #6b7280 !important;  /* koyu-gri placeholder */
+      opacity: 1;
+    }
+
+    /* Koyu tema (panel.js ile html.dark kullanıldığında) */
+    html.dark input[type="text"],
+    html.dark input[type="date"],
+    html.dark input[type="password"],
+    html.dark textarea,
+    html.dark select,
+    html.dark input[type="file"] {
+      color: #eaf2f6 !important;                          /* açık metin */
+      background: rgba(255,255,255,0.02) !important;      /* hafif koyu arka plan */
+      border: 1px solid rgba(255,255,255,0.03) !important;
+      caret-color: #eaf2f6;
+    }
+
+    html.dark input::placeholder, html.dark textarea::placeholder {
+      color: #98a0ad !important;  /* açık gri placeholder */
+      opacity: 1;
+    }
+
+    /* Odak (focus) durumu */
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      box-shadow: 0 8px 26px rgba(46,163,214,0.08);
+      border-color: #2ea3d6 !important;
+    }
+
+    /* Dosya input'larının metin görünümü (tarayıcı farklılıkları) */
+    input[type="file"]::-webkit-file-upload-button {
+      color: #0b1220;
+    }
+
+    /* Tablolar ve küçük metinler için kontrast */
+    .table, .table th, .table td {
+      color: #0b1220;
+    }
+    html.dark .table, html.dark .table th, html.dark .table td {
+      color: #eaf2f6;
+    }
+  </style>
+</head>
+<body>
+  <main style="padding:28px;max-width:1100px;margin:0 auto;">
+    <div class="card fade-in">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h2 style="margin:0">Excel ile Fiyat Yükle</h2>
+        <div style="color:var(--muted)">İçeriği kontrol etmeden veriler gönderilmez. Bu sayfa yüklemeleri BAKANLIK verilerine eklemez; ayrı bir uploads deposuna yazar.</div>
+      </div>
+
+      <form id="uploadForm" onsubmit="return false" style="display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start">
+        <div>
+          <label>Başlangıç Tarihi</label>
+          <input type="date" id="startDate" />
+          <label style="margin-top:12px">Bitiş Tarihi</label>
+          <input type="date" id="endDate" />
+          <label style="margin-top:12px">Açıklama (opsiyonel)</label>
+          <input type="text" id="note" placeholder="Örn: Sezon 2025, kampanya..." />
+        </div>
+
+        <div>
+          <label>Excel Dosyası (Kalkış, Varış, Fiyat)</label>
+          <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" />
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button id="previewBtn" class="btn btn-ghost" type="button">Önizle</button>
+            <button id="uploadBtn" class="btn btn-primary" type="button">Sunucuya Gönder</button>
+          </div>
+
+          <div style="margin-top:18px;color:var(--muted);font-size:13px">
+            - İlk satır başlık satırı olmalıdır. <br>
+            - Önerilen başlıklar: <code>origin,destination,price</code> veya Türkçe: <code>Kalkış,Varış,Fiyat</code>.<br>
+            - Yüklenen veriler BAKANLIK sayfasına otomatik eklenmez; Uploads altında tutulur. Silme yalnızca yükleyen kullanıcı tarafından yapılabilir.
+          </div>
+        </div>
+      </form>
+
+      <section id="previewArea" style="margin-top:18px;display:none">
+        <h3>Önizleme (ilk 200 satır)</h3>
+        <div id="previewTable" style="overflow:auto;max-height:420px;border-radius:8px"></div>
+      </section>
+
+      <section id="myUploadsSection" style="margin-top:28px">
+        <h3>Benim Yüklemelerim</h3>
+        <div id="myUploadsContainer">Yüklemeler yükleniyor...</div>
+        <div id="myUploadsError" style="color:#b91c1c;margin-top:8px;display:none;"></div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Eğer backend farklı bir hostta ise buraya tam adres yazın, örn: 'http://192.168.1.112:5000'
+    const API_BASE = 'http://192.168.1.112:5000'; // gerektiğinde değiştirin
+
+    const excelFileEl = document.getElementById('excelFile');
+    const previewBtn = document.getElementById('previewBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const previewArea = document.getElementById('previewArea');
+    const previewTable = document.getElementById('previewTable');
+    const myUploadsContainer = document.getElementById('myUploadsContainer');
+    const myUploadsError = document.getElementById('myUploadsError');
+    let parsedRows = [];
+    let lastFile = null;
+
+    function getUsername() {
+      return localStorage.getItem('username') || localStorage.getItem('user') || 'anonymous';
+    }
+
+    previewBtn.addEventListener('click', () => {
+      const f = excelFileEl.files[0];
+      if (!f) return alert('Önce bir Excel dosyası seçin.');
+      lastFile = f;
+      const r = new FileReader();
+      r.onload = (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const wb = XLSX.read(data, { type: 'array' });
+          const ws = wb.Sheets[wb.SheetNames[0]];
+          const json = XLSX.utils.sheet_to_json(ws, { defval: '' });
+          parsedRows = json;
+          renderPreview(json);
+        } catch(err) {
+          console.error(err);
+          alert('Dosya okunamadı. Excel mi kontrol edin.');
+        }
+      };
+      r.readAsArrayBuffer(f);
+    });
+
+    function renderPreview(rows){
+      if (!rows || rows.length === 0) {
+        previewTable.innerHTML = '<div style="padding:18px;color:var(--muted)">Gösterilecek satır yok</div>';
+        previewArea.style.display = 'block';
+        return;
+      }
+      const headers = Object.keys(rows[0]);
+      let html = '<table class="table"><thead><tr>';
+      headers.forEach(h => html += `<th>${h}</th>`);
+      html += '</tr></thead><tbody>';
+      rows.slice(0,200).forEach(row => {
+        html += '<tr>';
+        headers.forEach(h => html += `<td>${String(row[h] ?? '').replace(/</g,'&lt;')}</td>`);
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      previewTable.innerHTML = html;
+      previewArea.style.display = 'block';
+    }
+
+    // yüklemeleri getir ve render et (kendi yüklemelerin)
+    async function loadMyUploads() {
+      myUploadsError.style.display = 'none';
+      myUploadsContainer.innerHTML = 'Yüklemeler yükleniyor...';
+      const username = getUsername();
+      if (!username) {
+        myUploadsContainer.innerHTML = '<div>Kullanıcı adı bulunamadı (giriş yapın).</div>';
+        return;
+      }
+      try {
+        const url = (API_BASE || '') + '/api/uploads?user=' + encodeURIComponent(username);
+        const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        if (!res.ok) {
+          const txt = await res.text().catch(()=>'');
+          myUploadsContainer.innerHTML = '';
+          myUploadsError.style.display = 'block';
+          myUploadsError.textContent = `Yüklemeler alınamadı: ${res.status} ${res.statusText} ${txt ? ' — ' + txt : ''}`;
+          return;
+        }
+        const data = await res.json();
+        if (!data || data.length === 0) {
+          myUploadsContainer.innerHTML = '<div>Henüz yükleme yapılmamış.</div>';
+          return;
+        }
+        // render table with delete buttons for own uploads
+        const usernameNow = username;
+        let html = '<table class="table"><thead><tr><th>Route</th><th>Fiyat</th><th>Yükleyen</th><th>Tarih</th><th>ID</th><th></th></tr></thead><tbody>';
+        data.forEach(it => {
+          html += `<tr id="row-${it.id}">
+            <td>${it.route || ''}</td>
+            <td>${it.price != null ? it.price : ''}</td>
+            <td>${it.uploaded_by || ''}</td>
+            <td>${it.uploaded_at ? new Date(it.uploaded_at).toLocaleString() : ''}</td>
+            <td style="font-size:12px;color:var(--muted)">${it.id}</td>
+            <td>${it.uploaded_by === usernameNow ? `<button class="btn-delete" data-id="${it.id}">Sil</button>` : ''}</td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
+        myUploadsContainer.innerHTML = html;
+
+        // attach delete handlers
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const id = btn.getAttribute('data-id');
+            if (!confirm('Bu kaydı silmek istediğinize emin misiniz?')) return;
+            try {
+              const delUrl = (API_BASE || '') + '/api/uploads/' + id;
+              const res2 = await fetch(delUrl, {
+                method: 'DELETE',
+                headers: { 'X-User': usernameNow }
+              });
+              const text = await res2.text().catch(()=>null);
+              let payload;
+              try { payload = JSON.parse(text); } catch(e) { payload = text; }
+              if (!res2.ok) {
+                alert('Silme başarısız: ' + res2.status + ' ' + res2.statusText + '\n' + (payload ? JSON.stringify(payload) : ''));
+                return;
+              }
+              // başarılı -> satırı DOM'dan kaldır
+              const row = document.getElementById('row-' + id);
+              if (row) row.remove();
+              alert('Kayıt silindi.');
+            } catch (err) {
+              console.error(err);
+              alert('Silme sırasında hata oluştu: ' + (err.message || err));
+            }
+          });
+        });
+
+      } catch (err) {
+        console.error(err);
+        myUploadsContainer.innerHTML = '';
+        myUploadsError.style.display = 'block';
+        myUploadsError.textContent = 'Sunucuya bağlanırken hata oluştu: ' + (err.message || err);
+      }
+    }
+
+    // Gerçek upload: backend'e FormData ile gönder
+    uploadBtn.addEventListener('click', async () => {
+      if (!lastFile) return alert('Önce dosyayı önizleyin veya seçin.');
+      if (!confirm('Seçilen Excel dosyasındaki veriler sunucuya gönderilcek. Devam edilsin mi?')) return;
+
+      const form = new FormData();
+      form.append('file', lastFile);
+      form.append('startDate', document.getElementById('startDate').value || '');
+      form.append('endDate', document.getElementById('endDate').value || '');
+      form.append('note', document.getElementById('note').value || '');
+
+      const username = getUsername();
+      try {
+        const url = (API_BASE || '') + '/api/upload_bakanlik_excel';
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'X-User': username
+          },
+          body: form
+        });
+
+        const contentType = res.headers.get('content-type') || '';
+        let payload;
+        if (contentType.includes('application/json')) payload = await res.json();
+        else payload = await res.text();
+
+        if (!res.ok) {
+          console.error('Upload error', res.status, payload);
+          alert('Yükleme başarısız: ' + res.status + ' ' + res.statusText + '\n' + JSON.stringify(payload));
+          return;
+        }
+
+        const inserted = (payload && payload.inserted) ? payload.inserted : 0;
+        alert('Yükleme başarılı. Eklenen satır sayısı: ' + inserted);
+        // yüklemeleri yenile
+        loadMyUploads();
+      } catch (err) {
+        console.error(err);
+        alert('Sunucuya bağlanırken hata oluştu. Konsolu kontrol et. ' + (err.message || ''));
+      }
+    });
+
+    // sayfa yüklendiğinde kendi yüklemelerini getir
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMyUploads();
+    });
+  </script>
+</body>
+</html>

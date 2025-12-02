@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Fiyatları Excel DÖK</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h3 { color: #2c3e50; }
+    button {
+      padding: 8px 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    a {
+      display: block;
+      margin-top: 15px;
+      color: #2c3e50;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h3>📄 Fiyatları Excel DÖK</h3>
+  <form id="upload-form" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*" required>
+    <br><br>
+    <button type="submit">Excel Oluştur</button>
+  </form>
+  <a id="download-link" style="display:none;" download>↓ Excel Dosyasını İndir</a>
+  <script>
+    document.getElementById("upload-form").onsubmit = async function(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const response = await fetch("/upload", {
+        method: "POST",
+        body: formData
+      });
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.getElementById("download-link");
+        link.href = url;
+        link.style.display = "block";
+        link.innerText = "↓ Excel Dosyasını İndir";
+      } else {
+        alert("Excel oluşturulamadı.");
+      }
+    };
+  </script>
+</body>
+</html>
